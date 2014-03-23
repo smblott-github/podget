@@ -131,6 +131,13 @@ Examples:
   Example with date substitution in the category and a blank feed name.
   http://downloads.bbc.co.uk/rmhttp/downloadtrial/worldservice/summary/rss.xml News-%YY%-%MM%-%DD%
 
+AUTHENTICATION
+
+To use authenticated feeds, add a user name and password to the server
+list:
+
+   <url> <category> <name> <username> <password>
+
 HANDLING UTF-16 FEEDS
 
 Some servers provide their feeds in UTF-16 format rather than the more common UTF-8.

@@ -8,6 +8,9 @@ podget.7.gz: DOC/podget.7
 changelog.gz: Changelog
 	gzip -9 < $< > $@
 
+DOC/podget.7: DOC/podget.man.txt
+	sh SCRIPTS/txt2man $< > $@
+
 install: podget podget.7.gz
 	mkdir -p $(DESTDIR)$(prefix)/bin/
 	install -m 755 podget $(DESTDIR)$(prefix)/bin/podget
