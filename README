@@ -19,15 +19,16 @@ automatic UTF-16 conversion for podcasts hosted on MS Windows servers.
 What's new in this fork?
 ========================
 
-Basically, just authentication.
+Basically, just per-feed wget options -- which is particularly useful for
+authentication.
 
 Normally, each line of the podget serverlist file contains three tokens:
 
    url category name
 
-This fork adds support for basic authentication via wget.  To use basic
-authentication, simply append a user name and password to the relevant entry in
-serverlist:
+This fork adds support for addition per-feed wget options.  Any subseqent
+tokens on the feed line are passed directly to wget.  So, to use basic
+authentication, for example, use:
 
-   url category name username password
+   url category name --user=USER --password=PASSWORD
 

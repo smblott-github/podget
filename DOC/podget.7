@@ -224,14 +224,21 @@ Examples:
 
 .fam T
 .fi
-.SH AUTHENTICATION
-
-To use authenticated feeds, add a user name and password to the server
-list:
+PER-FEED WGET OPTIONS
+.PP
+Additional tokens in a feed definition are taken as per-feed wget options.
 .PP
 .nf
 .fam C
-   <url> <category> <name> <username> <password>
+   <url> <category> <name> [<wget-options>\.\.\.]
+
+.fam T
+.fi
+For example,
+.PP
+.nf
+.fam C
+   <url> <category> <name> --user=USER --password=PASSWORD
 
 .fam T
 .fi

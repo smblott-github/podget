@@ -131,12 +131,15 @@ Examples:
   Example with date substitution in the category and a blank feed name.
   http://downloads.bbc.co.uk/rmhttp/downloadtrial/worldservice/summary/rss.xml News-%YY%-%MM%-%DD%
 
-AUTHENTICATION
+PER-FEED WGET OPTIONS
 
-To use authenticated feeds, add a user name and password to the server
-list:
+Additional tokens in a feed definition are taken as per-feed wget options.
 
-   <url> <category> <name> <username> <password>
+   <url> <category> <name> [<wget-options>...]
+
+For example,
+
+   <url> <category> <name> --user=USER --password=PASSWORD
 
 HANDLING UTF-16 FEEDS
 

@@ -881,7 +881,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
             continue
         fi
 
-        while read feed_url feed_category feed_name feed_user feed_password ; do
+        while read feed_url feed_category feed_name feed_wget_options ; do
             if [ $verbosity -ge 3 ] ; then
                 echo -e "\nServer/Feed URL --> $feed_url"
             fi
@@ -901,11 +901,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                 echo "Downloading feed index from $feed_url" 
             fi
 
-            feed_wget_options=""
-            [[ -n "$feed_user" ]] && feed_wget_options="$feed_wget_options --user=$feed_user"
-            [[ -n "$feed_password" ]] && feed_wget_options="$feed_wget_options --password=$feed_password"
-            
-            if [ $verbosity -ge 2 ] ; then
+            if [ $verbosity -ge 2 ] && [ -n "$feed_wget_options" ] ; then
                 echo "Using wget user name and password: $feed_wget_options"
             fi
 
