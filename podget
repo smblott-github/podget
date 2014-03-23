@@ -922,6 +922,29 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
             esac
             
             if [ -n "$indexfile" ] ; then
+
+                # Some feeds put enclosures in the wrong order (so, newest at the bottom).
+                # If $most_recent is anything other than 0, then podget doesn't pick up new
+                # items in such feeds.  So, here, we filter out urls we've already seen early.
+                #
+                if [ $most_recent -gt 0 ] ; then
+                    filtered_indexfile=""
+                    for url in $indexfile
+                    do
+                        if ! fgrep -q $url $dir_log/$log_comp
+                        then
+                            filtered_indexfile="$filtered_indexfile $url"
+                        else
+                            if [ $verbosity -ge 2 ] ; then 
+                                echo "Skipping: $url"
+                            fi
+                        fi
+                    done
+                    indexfile="$filtered_indexfile"
+                fi
+                
+                # Resume legacy podget filtering...
+                #
                 if [ $most_recent -gt 0 ] ; then
                     fullindexfile=$indexfile
                     indexfile=$(echo ${indexfile} | cut -d \  -f -${most_recent})
@@ -935,8 +958,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                         echo -e "Index List:\n${indexfile}"
                     fi
                 fi
-                exit
-                
+
                 for url in $indexfile
                 do
                     if [ ${verbosity} -ge 2 ] ; then
