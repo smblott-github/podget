@@ -1,7 +1,13 @@
+What is this?
+=============
+
 This is a fork of podget, a simple podcast aggregator.  The official project
-web page and downloads are here:
+web page and original downloads are here:
 
    - http://podget.sourceforge.net/
+
+What is podget?
+===============
 
 Podget is a simple podcast aggregator optimized for running as a scheduled
 background job (i.e. cron). It features support for downloading podcasts
@@ -10,14 +16,18 @@ importing URLs from iTunes PCAST files & OPML lists automatic M3U & ASX
 playlist creation, and automatic cleanup of old files.  It also features
 automatic UTF-16 conversion for podcasts hosted on MS Windows servers.
 
-Normally, each line of the podget serverlist configuration file contains
-three tokens:
+What's new in this fork?
+========================
 
-   - url category name
+Basically, just authentication.
 
-Additionally, this fork adds support for basic authentication via wget.  To use
-basic authentication, simply append a user name and password to the relevant
-entry in serverlist:
+Normally, each line of the podget serverlist file contains three tokens:
 
-   - url category name username password
+   url category name
+
+This fork adds support for basic authentication via wget.  To use basic
+authentication, simply append a user name and password to the relevant entry in
+serverlist:
+
+   url category name username password
 
