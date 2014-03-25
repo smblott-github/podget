@@ -45,4 +45,5 @@ Suffix
 ------
 
 This fork adds a command-line and configuration option "--suffix <SUFFIX>"
-indicating an additional suffix which is appended to each downloaded file.
+indicating an additional suffix which is appended to the name of each
+downloaded file.
