@@ -37,6 +37,8 @@ OPTIONS
 
     --serverlist <FILE>          Use <FILE> as serverlist instead of default.
 
+    --suffix <SUFFIX>            Append <SUFFIX> to the name of each downloaded file.
+
     -s, --silent                 Run silently (for cron jobs).
 
     -v                           Set verbosity to level 1.
