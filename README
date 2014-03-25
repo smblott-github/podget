@@ -36,10 +36,10 @@ Per-feed wget options -- which is particularly useful for authentication:
 Earlier feed filtering:
 
    This fork filters "already-downloaded" podcasts earlier, specifically before
-   determining the  "most_recent" podcasts to download.  This helps with feeds
+   determining the "most_recent" podcasts to download.  This helps with feeds
    for which the newest enclosures are at the bottom.
 
 Suffix:
 
-   This fork adds an option "--suffix <SUFFIX>" indicating an additional
-   suffix which is appended to each downloaded file.
+   This fork adds a command-line and configuration option "--suffix <SUFFIX>"
+   indicating an additional suffix which is appended to each downloaded file.
