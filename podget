@@ -142,6 +142,11 @@ most_recent=0
 # 1 == Force download all items even those you've downloaded before. 
 force=0
 
+# Images
+# 0 == Normal.
+# 1 == Just download feed images.
+images=0
+
 # Install session.  This gets called when script is first installed.
 install_session=0
 
