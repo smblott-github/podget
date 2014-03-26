@@ -914,21 +914,18 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
             fi
 
             mkdir -p "$dir_library/$feed_category/$feed_name"
-            feed_file="$dir_library/$feed_category/$feed_name/.podget.feed.xml"
+            feed_file="$dir_library/$feed_category/$feed_name/.podget_feed.xml"
 
             # Fetch the feed RSS to a file and clean it up:
-            #   - drop "itunes:" prefixes on tags
-            #   - drop trailing junk after "</rss>" (some BBC feeds seems to have this)
+            #   - strip "itunes:" prefixes on tags
+            #   - strip trailing junk after "</rss>" (some BBC feeds seems to have this)
             #
             # We keep the feed file in case it's needed later; for example, it might be useful for extracting the image associated
             # with the feed.
             #
             wget $wget_options $feed_wget_options -O - $feed_url \
-                | sed -e 's!<itunes:!<!g' \
-                | sed -e 's!</itunes:!</!g' \
-                | sed -e 's!</rss>!\n</rss>\n!' \
-                | sed -e '/<\/rss>/,$ d' \
-                | sed -e '$ s!$!\n</rss>!' > $feed_file
+                | sed -e 's!<itunes:!<!g' -e 's!</itunes:!</!g' \
+                | sed -n -e '1 h; 1! H; $ { g; s!</rss>.*!</rss>!g; p; }' > $feed_file
             
             case $filetype in
                 'utf8')  
