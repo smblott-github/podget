@@ -143,10 +143,10 @@ most_recent=0
 # 1 == Force download all items even those you've downloaded before. 
 force=0
 
-# Images
-# 0 == Normal.
-# 1 == Also download feed images.
-images=0
+# Feed images
+# Anything other than "yes" == Normal.
+# "yes" == Also download feed images (to ".podget.image.xml" in the feed directory).
+images="no"
 
 # Append this suffix to all downloaded files
 suffix=
@@ -836,6 +836,9 @@ echo -e "Config file: $config_core" > "${dir_session}"/podget.$$
 # ----------------------------------------------------------------------------------------------------------------------------------
 # Loop over servers on list                                                                                                      {{{
 
+tmp_file=$(mktemp /tmp/podget.$$.XXXXXX)
+trap "[ -f $tmp_file ] && rm $tmp_file" INT TERM EXIT
+
 if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z $import_pcast ] ; then
     if [ $verbosity -ge 3 ] ; then
         echo -e "\nMain loop."
@@ -918,15 +921,39 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                 echo "Using additional wget options: $feed_wget_options"
             fi
 
+            mkdir -p "$dir_library/$feed_category/$feed_name"
+
+            # Fetch feed RSS and clean it up:
+            #   - drop "itunes:" prefix on tags
+            #   - drop trailing junk after "</rss>"
+            wget $wget_options $feed_wget_options -O - $feed_url \
+                | sed -e 's!<itunes:!<!g' \
+                | sed -e 's!</itunes:!</!g' \
+                | sed -e 's!</rss>!\n</rss>\n!' \
+                | sed -e '/<\/rss>/,$ d' \
+                | sed -e '$ s!$!\n</rss>!' > $tmp_file
+            
+            if [ "$images" = 'yes' ] || [ "$images" = '"yes"' ]
+            then
+                if which xmllint > /dev/null
+                then
+                    xmllint --xpath '//channel/image' $tmp_file > "$dir_library/$feed_category/$feed_name/.podget_feed_image.xml.tmp" 2> /dev/null \
+                        && mv "$dir_library/$feed_category/$feed_name/.podget_feed_image.xml.tmp" "$dir_library/$feed_category/$feed_name/.podget_feed_image.xml"
+                else
+                    echo "Error: images=$images, but xmllint is not available" >&2
+                    exit 1
+                fi
+            fi
+
             case $filetype in
                 'utf8')  
-                    indexfile=$(wget $wget_options $feed_wget_options -O - $feed_url  | sed -e 's/\r/\n/g' -e 's/<\([^/]\)/\n<\1/g' | \
+                    indexfile=$( < $tmp_file sed -e 's/\r/\n/g' -e 's/<\([^/]\)/\n<\1/g' | \
                         sed -n -e :a -e 's/.*<enclosure.*url\s*=\s*"\([^"]\+\)".*/\1/Ip' -e 't' \
                                      -e "s/.*<enclosure.*url\s*=\s*'\([^']\+\)'.*/\1/Ip" \
                                      -e '/<enclosure\s*/{N;s/ *\n/ /;ba;}' | \
                         sed -e "s/'/%27/g" -e 's/\&apos;/%27/g' -e 's/\&amp;/\&/g') ;;
                 'utf16') 
-                    indexfile=$(wget $wget_options $feed_wget_options -O - $feed_url | iconv -f UTF-16 -t UTF-8  | \
+                    indexfile=$( < $tmp_file iconv -f UTF-16 -t UTF-8  | \
                         sed -e 's/\r/\n/g' -e 's/<\([^/]\)/\n<\1/g' | \
                         sed -n -e :a -e 's/.*<enclosure.*url\s*=\s*"\([^"]\+\)".*/\1/Ip' -e 't' \
                                      -e "s/.*<enclosure.*url\s*=\s*'\([^']\+\)'.*/\1/Ip" \
@@ -1007,8 +1034,6 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                         fi
                     fi
 
-                    mkdir -p "$dir_library/$feed_category/$feed_name"
-                    
                     dtest=$(fgrep $url $dir_log/$log_comp)
                     
                     if [ -z "${dtest}" ] || [ ${force} -ne 0 ] ; then
