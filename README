@@ -19,21 +19,31 @@ automatic UTF-16 conversion for podcasts hosted on MS Windows servers.
 What's new in this fork?
 ========================
 
-Per-feed wget options -- which is particularly useful for authentication:
+Mostly just stuff which makes podget work the way I need it to...
 
-   Normally, each line of the podget serverlist file contains three tokens:
-   
-      url category name
-   
-   This fork adds support for addition per-feed wget options.  Any subseqent
-   tokens on the feed line are passed directly to wget.  So, to use basic
-   authentication, for example, use:
-   
-      url category name --user=USER --password=PASSWORD
+Per-feed wget options
+---------------------
 
-Better feed filtering:
+Normally, each line of the podget serverlist file contains three tokens:
 
-   In addition, podget also filters "already-downloaded" podcasts earlier,
-   before consoluting "most_recent".  This helps with feeds for which the
-   newest enclosures are at the bottom.
+   url category name
 
+This fork adds support for addition per-feed wget options.  Any subseqent
+tokens on the feed line are passed directly to wget.  So, to use basic
+authentication, for example, use:
+
+   url category name --user=USER --password=PASSWORD
+
+Earlier feed filtering
+----------------------
+
+This fork filters "already-downloaded" podcasts earlier, specifically before
+determining the "most_recent" podcasts to download.  This helps with feeds for
+which the newest enclosures are at the bottom.
+
+Suffix
+------
+
+This fork adds a command-line and configuration option "--suffix <SUFFIX>"
+indicating an additional suffix which is appended to the name of each
+downloaded file.

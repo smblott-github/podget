@@ -82,6 +82,7 @@ err_exportopml=90
                                  each feed.
     --serverlist <list>          Serverlist to use.
     -s --silent                  Run silently (for cron jobs).
+    --suffix <SUFFIX>            Suffix, appended to each downloaded file.
     --verbosity <LEVEL>          Set verbosity level (0-4).
     -v                           Set verbosity to level 1.
     -vv                          Set verbosity to level 2.
@@ -144,8 +145,11 @@ force=0
 
 # Images
 # 0 == Normal.
-# 1 == Just download feed images.
+# 1 == Also download feed images.
 images=0
+
+# Append this suffix to all downloaded files
+suffix=
 
 # Install session.  This gets called when script is first installed.
 install_session=0
@@ -370,6 +374,9 @@ min_space=614400
 # 0 == do not create
 # 1 == create
 asx_playlist=0
+
+# Append this suffix to all downloaded files
+suffix=
 TEXT_DEFAULT_CONFIG
 
 : << TEXT_DEFAULT_SERVERLIST
@@ -595,6 +602,7 @@ while [ $# -ge 1 ] ; do
         -p | --playlist-asx ) cmdl_asx=1                 ; shift         ;;
         -r | --recent       ) cmdl_most_recent=$2        ; shift ; shift ;;
              --serverlist   ) cmdl_serverlist=$2         ; shift ; shift ;;
+             --suffix       ) suffix=$2                  ; shift ; shift ;;
         -s | --silent       ) silent=1 ; verbosity=0     ; shift         ;;
         -V | --version      ) verbosity=2 ; repver=1     ; shift         ;;
 		-v                  ) verbosity=1                ; shift         ;;
@@ -1013,10 +1021,14 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                             fi
                         fi
                         
+                        mod_filename="$mod_filename$suffix"
+                        url_filename="$url_filename$suffix"
+
                         if [ -n "$mod_filename" ] ; then
                             wget $wget_options $feed_wget_options -O "$dir_library/$feed_category/$feed_name/$mod_filename" $url
                         else
-                            wget $wget_options $feed_wget_options -P "$dir_library/$feed_category/$feed_name/" $url
+                            # wget $wget_options $feed_wget_options -P "$dir_library/$feed_category/$feed_name/" $url
+                            wget $wget_options $feed_wget_options -O "$dir_library/$feed_category/$feed_name/$url_filename" $url
                         fi
                         
                         # Suggested fix from https://sourceforge.net/tracker/?func=detail&aid=2170298&group_id=133382&atid=727035
