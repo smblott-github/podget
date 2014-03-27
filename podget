@@ -915,17 +915,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
 
             mkdir -p "$dir_library/$feed_category/$feed_name"
             feed_file="$dir_library/$feed_category/$feed_name/.podget_feed.xml"
-
-            # Fetch the feed RSS to a file and clean it up:
-            #   - strip "itunes:" prefixes on tags
-            #   - strip trailing junk after "</rss>" (some BBC feeds seems to have this)
-            #
-            # We keep the feed file in case it's needed later; for example, it might be useful for extracting the image associated
-            # with the feed.
-            #
-            wget $wget_options $feed_wget_options -O - $feed_url \
-                | sed -e 's!<itunes:!<!g' -e 's!</itunes:!</!g' \
-                | sed -n -e '1 h; 1! H; $ { g; s!</rss>.*!</rss>!g; p; }' > $feed_file
+            wget $wget_options $feed_wget_options -O "$feed_file" $feed_url \
             
             case $filetype in
                 'utf8')  
@@ -953,7 +943,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                     filtered_indexfile=""
                     for url in $indexfile
                     do
-                        if ! fgrep -q $url $dir_log/$log_comp
+                        if [ "${force}" -ne 0 ] || ! fgrep -q -x $url $dir_log/$log_comp
                         then
                             filtered_indexfile="$filtered_indexfile $url"
                         else
@@ -1016,7 +1006,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                         fi
                     fi
 
-                    dtest=$(fgrep $url $dir_log/$log_comp)
+                    dtest=$(fgrep -x $url $dir_log/$log_comp)
                     
                     if [ -z "${dtest}" ] || [ ${force} -ne 0 ] ; then
                         if [ ${verbosity} -ge 2 ] ; then
@@ -1072,7 +1062,7 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                 if [ $most_recent -ne 0 -a $install_session -eq 0 ] ; then
                     for url in $fullindexfile
                     do
-                        dtest=$(fgrep $url $dir_log/$log_comp)
+                        dtest=$(fgrep -x $url $dir_log/$log_comp)
                         if [ -z "${dtest}" ] ; then
                             url_filename=$(echo $url | sed -e 's/.*\/\([^\/]\+\)/\1/' -e 's/%20/ /g')
                             if [ $verbosity -ge 2 ] ; then

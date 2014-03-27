@@ -47,3 +47,11 @@ Suffix
 This fork adds a command-line and configuration option "--suffix <SUFFIX>"
 indicating an additional suffix which is appended to the name of each
 downloaded file.
+
+Retain RRS/XML Downloads
+------------------------
+
+This fork retains the original RSS/XML download file in a file named
+".podget_feed_image.xml" in the podcast directory.  This can be useful for
+extracting additional information about the feed, such as the associated
+imagery.
