@@ -916,6 +916,9 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
             mkdir -p "$dir_library/$feed_category/$feed_name"
             feed_file="$dir_library/$feed_category/$feed_name/.podget_feed.xml"
 
+            # We need to remove $feed_file before download.
+            # The podget default options for wget include -c.
+            # If we leave $feed_file in place, it will not be replaced, but appended to.
             [ -f "$feed_file" ] && rm "$feed_file"
             wget $wget_options $feed_wget_options -O "$feed_file" $feed_url
             
@@ -1035,14 +1038,14 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                             echo "$url" >> $dir_log/$log_comp
                             if [ -n "$playlist_name" ] ; then
                                 if [ -n "$mod_filename" ] ; then
-                                    echo "${feed_category}/${feed_name}/${mod_filename}" >> "${dir_library}/${playlist_name}"
+                                    echo "${feed_category}/${feed_name}/${mod_filename%$suffix}" >> "${dir_library}/${playlist_name}"
                                     if [ ${verbosity} -ge 2 ]; then
-                                        echo "Adding ${feed_category}/${feed_name}/${mod_filename} to ${dir_library}/${playlist_name}"
+                                        echo "Adding ${feed_category}/${feed_name}/${mod_filename%$suffix} to ${dir_library}/${playlist_name}"
                                     fi
                                 else
-                                    echo "${feed_category}/${feed_name}/${url_filename}" >> "${dir_library}/${playlist_name}"
+                                    echo "${feed_category}/${feed_name}/${url_filename%$suffix}" >> "${dir_library}/${playlist_name}"
                                     if [ ${verbosity} -ge 2 ]; then
-                                        echo "Adding ${feed_category}/${feed_name}/${url_filename} to ${dir_library}/${playlist_name}"
+                                        echo "Adding ${feed_category}/${feed_name}/${url_filename%$suffix} to ${dir_library}/${playlist_name}"
                                     fi
                                 fi
                             fi
@@ -1324,4 +1327,4 @@ rm -f "${dir_session}"/podget.$$
 #     single feed, wgets continue fuction will cause them to append or error.
 #                                                                                                                                }}}
 # ----------------------------------------------------------------------------------------------------------------------------------
-# vim:tw=132:ts=4:sw=4
+# vim:ts=4:sw=4
