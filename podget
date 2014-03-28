@@ -915,7 +915,9 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
 
             mkdir -p "$dir_library/$feed_category/$feed_name"
             feed_file="$dir_library/$feed_category/$feed_name/.podget_feed.xml"
-            wget $wget_options $feed_wget_options -O "$feed_file" $feed_url \
+
+            [ -f "$feed_file" ] && rm "$feed_file"
+            wget $wget_options $feed_wget_options -O "$feed_file" $feed_url
             
             case $filetype in
                 'utf8')  
