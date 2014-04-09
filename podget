@@ -1032,12 +1032,12 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
 
                         if [ -n "$mod_filename" ] ; then
                             wget $wget_options $feed_wget_options -O "$dir_library/$feed_category/$feed_name/$mod_filename" $url
+                            echo "$url ${mod_filename%$suffix}" >> "$dir_library/$feed_category/$feed_name/.url_filename_map.txt"
                         else
-                            # wget $wget_options $feed_wget_options -P "$dir_library/$feed_category/$feed_name/" $url
                             wget $wget_options $feed_wget_options -O "$dir_library/$feed_category/$feed_name/$url_filename" $url
+                            echo "$url ${url_filename%$suffix}" >> "$dir_library/$feed_category/$feed_name/.url_filename_map.txt"
                         fi
                         
-                        # Suggested fix from https://sourceforge.net/tracker/?func=detail&aid=2170298&group_id=133382&atid=727035
                         if [ $? -eq 0  ] ; then
                             echo "$url" >> $dir_log/$log_comp
                             if [ -n "$playlist_name" ] ; then
