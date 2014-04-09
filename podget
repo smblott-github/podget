@@ -919,8 +919,12 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
             # We need to remove $feed_file before download.
             # The podget default options for wget include -c.
             # If we leave $feed_file in place, it will not be replaced, but appended to.
-            [ -f "$feed_file" ] && rm "$feed_file"
-            wget $wget_options $feed_wget_options -O "$feed_file" $feed_url
+            [ -f "$feed_file" ]     && rm "$feed_file"
+            [ -f "$feed_file.tmp" ] && rm "$feed_file.tmp"
+
+            wget $wget_options $feed_wget_options -O "$feed_file.tmp" $feed_url \
+                && mv -v "$feed_file.tmp" "$feed_file" \
+                || continue
             
             case $filetype in
                 'utf8')  
