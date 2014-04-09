@@ -1027,8 +1027,8 @@ if [ $cleanup_only -eq 0 ] && [ -z $import_opml ] && [ -z $export_opml ] && [ -z
                             fi
                         fi
                         
-                        mod_filename="$mod_filename$suffix"
                         url_filename="$url_filename$suffix"
+                        [ -n "$mod_filename" ] && mod_filename="$mod_filename$suffix"
 
                         if [ -n "$mod_filename" ] ; then
                             wget $wget_options $feed_wget_options -O "$dir_library/$feed_category/$feed_name/$mod_filename" $url
